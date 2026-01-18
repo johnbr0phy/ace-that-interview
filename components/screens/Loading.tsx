@@ -77,7 +77,6 @@ export function Loading({ onComplete }: LoadingProps) {
         <div style={{ marginBottom: 32 }}>
           <Coach
             message="Give me a moment while I analyze your profile and create something special for you..."
-            isTyping={false}
           />
         </div>
 

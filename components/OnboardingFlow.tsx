@@ -23,6 +23,8 @@ interface OnboardingFlowProps {
  * - Welcome → Questions → Loading → Plan Reveal
  * - Handles step transitions with AnimatePresence
  * - Manages state through Zustand store
+ *
+ * Animation sequence: Coach (0ms) → Question (400ms) → Options (600ms)
  */
 export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
   const {
@@ -36,7 +38,8 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
   } = useOnboardingStore();
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   // Initialize company and role on mount
   useEffect(() => {
@@ -48,7 +51,8 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
   // Reset states when step changes
   useEffect(() => {
     setSelectedOption(null);
-    setIsTypingComplete(false);
+    setShowQuestion(false);
+    setShowOptions(false);
   }, [currentStepId]);
 
   // Handle selection for multiple choice (auto-advance after delay)
@@ -134,16 +138,26 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
               style={{ padding: '80px 24px 24px' }}
             >
               <div className="w-full max-w-lg">
-                {/* Coach message - fixed height container */}
+                {/* Coach message - appears first */}
                 <div style={{ marginBottom: 32, minHeight: 80 }}>
                   <Coach
                     message={currentStep.coachMessage}
-                    onTypingComplete={() => setIsTypingComplete(true)}
+                    onAnimationComplete={() => {
+                      setShowQuestion(true);
+                      // Show options 200ms after question
+                      setTimeout(() => setShowOptions(true), 200);
+                    }}
                   />
                 </div>
 
-                {/* Question heading - always visible, no animation */}
-                <h2
+                {/* Question heading - fades in after coach */}
+                <motion.h2
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{
+                    opacity: showQuestion ? 1 : 0,
+                    y: showQuestion ? 0 : 12,
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
                   style={{
                     fontSize: 24,
                     fontWeight: 600,
@@ -151,18 +165,21 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                     color: 'var(--foreground)',
                     marginBottom: 24,
                     textAlign: 'center',
-                    visibility: currentStep.question ? 'visible' : 'hidden',
                   }}
                 >
                   {currentStep.question || '\u00A0'}
-                </h2>
+                </motion.h2>
 
-                {/* Options - always rendered, fade in after typing completes */}
-                <div
+                {/* Options - fade in after question */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{
+                    opacity: showOptions ? 1 : 0,
+                    y: showOptions ? 0 : 12,
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
                   style={{
-                    opacity: isTypingComplete ? 1 : 0,
-                    transition: 'opacity 0.3s ease-out',
-                    pointerEvents: isTypingComplete ? 'auto' : 'none',
+                    pointerEvents: showOptions ? 'auto' : 'none',
                   }}
                 >
                   {currentStep.questionType === 'multiple-choice' && currentStep.options && (
@@ -181,7 +198,7 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                       maxSelect={currentStep.maxSelect}
                     />
                   )}
-                </div>
+                </motion.div>
               </div>
             </div>
           )}

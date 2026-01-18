@@ -104,7 +104,6 @@ export function PlanReveal({ company, role }: PlanRevealProps) {
         <div style={{ marginBottom: 32 }}>
           <Coach
             message={`Great news! I've created a personalized ${plan.timelineText} plan for your ${roleConfig.displayName} interview at ${companyConfig?.displayName || company}.`}
-            isTyping={false}
           />
         </div>
 

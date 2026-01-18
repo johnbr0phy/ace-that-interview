@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   JobWiz Design System
+   Direction: Warmth & Approachability + Multi-tenant Brand Theming
+   ========================================================================== */
+
+:root {
+  /* -------------------------------------------------------------------------
+     Neutral Foundation (Stone)
+     Warm neutrals that work with any brand overlay
+     ------------------------------------------------------------------------- */
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+
+  /* Semantic colors */
+  --foreground: var(--stone-900);
+  --secondary: var(--stone-600);
+  --muted: var(--stone-400);
+  --faint: var(--stone-200);
+  --surface: #ffffff;
+  --surface-elevated: var(--stone-50);
+  --border: var(--stone-200);
+
+  /* -------------------------------------------------------------------------
+     Brand Colors (Default / Google)
+     ------------------------------------------------------------------------- */
+  --primary: #4285f4;
+  --primary-light: #e8f0fe;
+  --primary-dark: #1a73e8;
+  --accent: #34a853;
+  --accent-warm: #fbbc04;
+  --gradient-start: #4285f4;
+  --gradient-end: #34a853;
+
+  /* -------------------------------------------------------------------------
+     Radius Scale (Soft, Friendly)
+     ------------------------------------------------------------------------- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* -------------------------------------------------------------------------
+     Shadows (Subtle, Single-Layer)
+     ------------------------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 2px 8px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 25, 23, 0.10);
+
+  /* -------------------------------------------------------------------------
+     Animation
+     ------------------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+}
+
+/* ==========================================================================
+   Brand Theme Overrides
+   ========================================================================== */
+
+[data-theme="google"] {
+  --primary: #4285f4;
+  --primary-light: #e8f0fe;
+  --primary-dark: #1a73e8;
+  --accent: #34a853;
+  --gradient-start: #4285f4;
+  --gradient-end: #34a853;
+}
+
+[data-theme="meta"] {
+  --primary: #0668e1;
+  --primary-light: #e7f3ff;
+  --primary-dark: #0553b1;
+  --accent: #00a3ff;
+  --gradient-start: #0668e1;
+  --gradient-end: #00a3ff;
+}
+
+[data-theme="amazon"] {
+  --primary: #ff9900;
+  --primary-light: #fff4e5;
+  --primary-dark: #e88b00;
+  --accent: #232f3e;
+  --gradient-start: #ff9900;
+  --gradient-end: #febd69;
+}
+
+[data-theme="apple"] {
+  --primary: #007aff;
+  --primary-light: #e5f1ff;
+  --primary-dark: #0056b3;
+  --accent: #5856d6;
+  --gradient-start: #007aff;
+  --gradient-end: #5856d6;
+}
+
+[data-theme="microsoft"] {
+  --primary: #0078d4;
+  --primary-light: #deecf9;
+  --primary-dark: #005a9e;
+  --accent: #107c10;
+  --gradient-start: #0078d4;
+  --gradient-end: #50e6ff;
+}
+
+[data-theme="netflix"] {
+  --primary: #e50914;
+  --primary-light: #ffe5e7;
+  --primary-dark: #b20710;
+  --accent: #564d4d;
+  --gradient-start: #e50914;
+  --gradient-end: #831010;
+}
+
+/* ==========================================================================
+   Tailwind Theme Integration
+   ========================================================================== */
+
+@theme inline {
+  /* Colors */
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-accent: var(--accent);
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--surface);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+/* Brand gradient for progress bars, highlights */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+}
+
+/* Card with subtle shadow */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card with border (alternate approach) */
+.card-bordered {
+  background: var(--surface);
+  border: 2px solid var(--faint);
+  border-radius: var(--radius-lg);
+}
+
+/* Elevated surface */
+.surface-elevated {
+  background: var(--surface-elevated);
+}
+
+/* Focus ring for accessibility */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* ==========================================================================
+   Scrollbar (Subtle)
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-elevated);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--stone-400);
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}

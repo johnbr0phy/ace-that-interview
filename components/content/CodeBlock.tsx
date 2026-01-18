@@ -131,7 +131,8 @@ export function CodeBlock({ content }: CodeBlockProps) {
           background: 'var(--stone-900)',
           padding: '16px 12px',
           borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
-          overflowX: 'auto',
+          overflow: 'auto',
+          maxHeight: 320,
           boxShadow: 'var(--shadow-md)',
         }}
       >

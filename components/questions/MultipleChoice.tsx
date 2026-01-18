@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import type { QuestionOption } from '@/lib/flow';
 
 interface MultipleChoiceProps {
-  question: string;
   options: QuestionOption[];
   onSelect: (optionId: string) => void;
   selectedId?: string;
@@ -13,27 +12,12 @@ interface MultipleChoiceProps {
 /**
  * MultipleChoice Component
  *
- * No internal animations - parent handles fade-in.
+ * Renders only the options - question heading is rendered by parent.
  * Only the checkmark animates on selection.
  */
-export function MultipleChoice({ question, options, onSelect, selectedId }: MultipleChoiceProps) {
+export function MultipleChoice({ options, onSelect, selectedId }: MultipleChoiceProps) {
   return (
     <div className="w-full max-w-lg mx-auto">
-      {/* Question heading */}
-      <h2
-        style={{
-          fontSize: 24,
-          fontWeight: 600,
-          letterSpacing: '-0.02em',
-          color: 'var(--foreground)',
-          marginBottom: 24,
-          textAlign: 'center',
-        }}
-      >
-        {question}
-      </h2>
-
-      {/* Options */}
       <div className="flex flex-col gap-3">
         {options.map((option) => {
           const isSelected = selectedId === option.id;

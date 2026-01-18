@@ -5,7 +5,6 @@ import { useState } from 'react';
 import type { QuestionOption } from '@/lib/flow';
 
 interface MultiSelectProps {
-  question: string;
   options: QuestionOption[];
   onSubmit: (selectedIds: string[]) => void;
   minSelect?: number;
@@ -15,11 +14,10 @@ interface MultiSelectProps {
 /**
  * MultiSelect Component
  *
- * No internal animations - parent handles fade-in.
+ * Renders only the options - question heading is rendered by parent.
  * Only the checkmark animates on selection.
  */
 export function MultiSelect({
-  question,
   options,
   onSubmit,
   minSelect = 1,
@@ -43,27 +41,13 @@ export function MultiSelect({
 
   return (
     <div className="w-full max-w-lg mx-auto">
-      {/* Question heading */}
-      <h2
-        style={{
-          fontSize: 24,
-          fontWeight: 600,
-          letterSpacing: '-0.02em',
-          color: 'var(--foreground)',
-          marginBottom: 8,
-          textAlign: 'center',
-        }}
-      >
-        {question}
-      </h2>
-
       {/* Helper text */}
       <p
         style={{
           fontSize: 14,
           color: 'var(--secondary)',
           textAlign: 'center',
-          marginBottom: 24,
+          marginBottom: 16,
         }}
       >
         Select {minSelect === maxSelect ? minSelect : `${minSelect}-${maxSelect}`} option

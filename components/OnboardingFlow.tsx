@@ -142,7 +142,23 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                   />
                 </div>
 
-                {/* Question content - always rendered, fades in */}
+                {/* Question heading - always visible */}
+                {currentStep.question && (
+                  <h2
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 600,
+                      letterSpacing: '-0.02em',
+                      color: 'var(--foreground)',
+                      marginBottom: 24,
+                      textAlign: 'center',
+                    }}
+                  >
+                    {currentStep.question}
+                  </h2>
+                )}
+
+                {/* Options - fade in after typing */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isTypingComplete ? 1 : 0 }}
@@ -151,7 +167,6 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                 >
                   {currentStep.questionType === 'multiple-choice' && currentStep.options && (
                     <MultipleChoice
-                      question={currentStep.question || ''}
                       options={currentStep.options}
                       onSelect={handleMultipleChoiceSelect}
                       selectedId={selectedOption || undefined}
@@ -160,7 +175,6 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
 
                   {currentStep.questionType === 'multi-select' && currentStep.options && (
                     <MultiSelect
-                      question={currentStep.question || ''}
                       options={currentStep.options}
                       onSubmit={handleMultiSelectSubmit}
                       minSelect={currentStep.minSelect}

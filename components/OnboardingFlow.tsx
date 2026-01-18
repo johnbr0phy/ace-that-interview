@@ -157,32 +157,31 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                   {currentStep.question || '\u00A0'}
                 </h2>
 
-                {/* Options - only render after typing completes */}
-                {isTypingComplete && (
-                  <div
-                    style={{
-                      opacity: 1,
-                      transition: 'opacity 0.3s ease-out',
-                    }}
-                  >
-                    {currentStep.questionType === 'multiple-choice' && currentStep.options && (
-                      <MultipleChoice
-                        options={currentStep.options}
-                        onSelect={handleMultipleChoiceSelect}
-                        selectedId={selectedOption || undefined}
-                      />
-                    )}
+                {/* Options - always rendered, fade in after typing completes */}
+                <div
+                  style={{
+                    opacity: isTypingComplete ? 1 : 0,
+                    transition: 'opacity 0.3s ease-out',
+                    pointerEvents: isTypingComplete ? 'auto' : 'none',
+                  }}
+                >
+                  {currentStep.questionType === 'multiple-choice' && currentStep.options && (
+                    <MultipleChoice
+                      options={currentStep.options}
+                      onSelect={handleMultipleChoiceSelect}
+                      selectedId={selectedOption || undefined}
+                    />
+                  )}
 
-                    {currentStep.questionType === 'multi-select' && currentStep.options && (
-                      <MultiSelect
-                        options={currentStep.options}
-                        onSubmit={handleMultiSelectSubmit}
-                        minSelect={currentStep.minSelect}
-                        maxSelect={currentStep.maxSelect}
-                      />
-                    )}
-                  </div>
-                )}
+                  {currentStep.questionType === 'multi-select' && currentStep.options && (
+                    <MultiSelect
+                      options={currentStep.options}
+                      onSubmit={handleMultiSelectSubmit}
+                      minSelect={currentStep.minSelect}
+                      maxSelect={currentStep.maxSelect}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           )}

@@ -1,12 +1,61 @@
-export type StepType = 'welcome' | 'question' | 'loading' | 'plan';
+export type StepType = 'welcome' | 'question' | 'content' | 'loading' | 'plan';
 
 export type QuestionType = 'multiple-choice' | 'text-input' | 'multi-select' | 'slider';
+
+export type ContentType = 'video' | 'code' | 'diagram' | 'long-text' | 'image' | 'tip-card';
 
 export interface QuestionOption {
   id: string;
   label: string;
   description?: string;
 }
+
+export interface VideoContent {
+  type: 'video';
+  url: string; // YouTube embed URL
+  title: string;
+  duration?: string;
+}
+
+export interface CodeContent {
+  type: 'code';
+  language: string;
+  code: string;
+  title?: string;
+  highlightLines?: number[];
+}
+
+export interface DiagramContent {
+  type: 'diagram';
+  diagramType: 'complexity' | 'system' | 'flowchart' | 'comparison';
+  data: Record<string, unknown>;
+  title?: string;
+}
+
+export interface LongTextContent {
+  type: 'long-text';
+  title: string;
+  content: string; // Markdown supported
+  readingTime?: string;
+}
+
+export interface ImageContent {
+  type: 'image';
+  url: string;
+  alt: string;
+  caption?: string;
+}
+
+export interface TipCardContent {
+  type: 'tip-card';
+  tips: Array<{
+    icon: 'lightbulb' | 'warning' | 'check' | 'star';
+    title: string;
+    description: string;
+  }>;
+}
+
+export type StepContent = VideoContent | CodeContent | DiagramContent | LongTextContent | ImageContent | TipCardContent;
 
 export interface FlowStep {
   id: string;
@@ -15,6 +64,7 @@ export interface FlowStep {
   coachMessage: string;
   question?: string;
   options?: QuestionOption[];
+  content?: StepContent;
   placeholder?: string;
   min?: number;
   max?: number;
@@ -56,13 +106,163 @@ export const flowSteps: FlowStep[] = [
       { id: '6-10', label: '6-10 years', description: 'Senior' },
       { id: '10+', label: '10+ years', description: 'Staff / Principal' },
     ],
+    nextStep: 'big-o-intro',
+  },
+  // NEW: Video content explaining Big O
+  {
+    id: 'big-o-intro',
+    type: 'content',
+    coachMessage: "Before we continue, let's make sure you're solid on Big O notation - it comes up in every coding interview.",
+    content: {
+      type: 'video',
+      url: 'https://www.youtube.com/embed/BgLTDT03QtU',
+      title: 'Big O Notation in 5 Minutes',
+      duration: '5:23',
+    },
+    nextStep: 'big-o-diagram',
+  },
+  // NEW: Diagram showing complexity comparison
+  {
+    id: 'big-o-diagram',
+    type: 'content',
+    coachMessage: "Here's a visual reference for how different time complexities compare. This is crucial to internalize.",
+    content: {
+      type: 'diagram',
+      diagramType: 'complexity',
+      title: 'Time Complexity Comparison',
+      data: {
+        complexities: [
+          { name: 'O(1)', label: 'Constant', color: '#22c55e', example: 'Array access' },
+          { name: 'O(log n)', label: 'Logarithmic', color: '#84cc16', example: 'Binary search' },
+          { name: 'O(n)', label: 'Linear', color: '#eab308', example: 'Simple loop' },
+          { name: 'O(n log n)', label: 'Linearithmic', color: '#f97316', example: 'Merge sort' },
+          { name: 'O(n²)', label: 'Quadratic', color: '#ef4444', example: 'Nested loops' },
+          { name: 'O(2ⁿ)', label: 'Exponential', color: '#dc2626', example: 'Recursive fibonacci' },
+        ],
+      },
+    },
+    nextStep: 'code-example',
+  },
+  // NEW: Code example with syntax highlighting
+  {
+    id: 'code-example',
+    type: 'content',
+    coachMessage: "Let's look at a classic interview problem. Study this two-pointer approach - it's a pattern you'll use repeatedly.",
+    content: {
+      type: 'code',
+      language: 'python',
+      title: 'Two Sum II - Sorted Array',
+      code: `def two_sum(numbers: list[int], target: int) -> list[int]:
+    """
+    Find two numbers that add up to target.
+    Array is sorted - use two pointers!
+    Time: O(n), Space: O(1)
+    """
+    left, right = 0, len(numbers) - 1
+
+    while left < right:
+        current_sum = numbers[left] + numbers[right]
+
+        if current_sum == target:
+            return [left + 1, right + 1]  # 1-indexed
+        elif current_sum < target:
+            left += 1   # Need larger sum
+        else:
+            right -= 1  # Need smaller sum
+
+    return []  # No solution found`,
+      highlightLines: [7, 8, 12, 14],
+    },
+    nextStep: 'interview-tips',
+  },
+  // NEW: Tip cards with key advice
+  {
+    id: 'interview-tips',
+    type: 'content',
+    coachMessage: "These four tips have helped hundreds of candidates succeed. Read them carefully.",
+    content: {
+      type: 'tip-card',
+      tips: [
+        {
+          icon: 'lightbulb',
+          title: 'Think Out Loud',
+          description: "Interviewers can't read your mind. Narrate your thought process, even when you're stuck.",
+        },
+        {
+          icon: 'warning',
+          title: "Don't Jump to Code",
+          description: 'Spend 5-10 minutes understanding the problem. Ask clarifying questions. Discuss your approach first.',
+        },
+        {
+          icon: 'check',
+          title: 'Test Your Code',
+          description: 'Walk through your solution with a simple example. Check edge cases: empty input, single element, duplicates.',
+        },
+        {
+          icon: 'star',
+          title: 'Know Your Complexities',
+          description: "Always state the time and space complexity. If asked to optimize, know what you're optimizing from.",
+        },
+      ],
+    },
+    nextStep: 'system-design-intro',
+  },
+  // NEW: Long text content for deeper reading
+  {
+    id: 'system-design-intro',
+    type: 'content',
+    coachMessage: "System design is about trade-offs. Here's a quick primer on the key concepts.",
+    content: {
+      type: 'long-text',
+      title: 'System Design Fundamentals',
+      readingTime: '3 min read',
+      content: `## The Core Trade-offs
+
+Every system design decision involves trade-offs. Understanding these is more important than memorizing solutions.
+
+### CAP Theorem
+You can only guarantee two of three properties:
+- **Consistency**: Every read receives the most recent write
+- **Availability**: Every request receives a response
+- **Partition Tolerance**: System continues despite network failures
+
+In practice, partitions happen, so you're choosing between CP (consistent but may be unavailable) or AP (available but may be stale).
+
+### Scalability Patterns
+
+**Vertical Scaling** (Scale Up)
+- Add more CPU, RAM to existing machines
+- Simpler but has limits
+- Good for databases with complex transactions
+
+**Horizontal Scaling** (Scale Out)
+- Add more machines
+- Requires stateless design
+- Better for web servers, caches
+
+### Key Components to Know
+
+1. **Load Balancers** - Distribute traffic (Round Robin, Least Connections, IP Hash)
+2. **Caches** - Redis, Memcached (Cache-aside, Write-through, Write-behind)
+3. **CDNs** - Static content delivery, reduce latency
+4. **Message Queues** - Kafka, RabbitMQ (async processing, decoupling)
+5. **Databases** - SQL vs NoSQL, sharding, replication
+
+### The Framework
+
+1. **Clarify requirements** (functional + non-functional)
+2. **Estimate scale** (users, requests/sec, storage)
+3. **Design high-level** (boxes and arrows)
+4. **Deep dive** (pick 1-2 components)
+5. **Address bottlenecks** (what breaks at 10x scale?)`,
+    },
     nextStep: 'interview-type',
   },
   {
     id: 'interview-type',
     type: 'question',
     questionType: 'multi-select',
-    coachMessage: "Great! Let's identify what you'll be facing.",
+    coachMessage: "Now that you've seen some examples, let's identify what you'll be facing.",
     question: 'What types of interviews are you preparing for?',
     options: [
       { id: 'coding', label: 'Coding / Algorithms' },

@@ -10,6 +10,7 @@ import { PlanReveal } from '@/components/screens/PlanReveal';
 import { Coach } from '@/components/Coach';
 import { MultipleChoice } from '@/components/questions/MultipleChoice';
 import { MultiSelect } from '@/components/questions/MultiSelect';
+import { VideoContent, CodeBlock, DiagramContent, LongTextContent, TipCard } from '@/components/content';
 
 interface OnboardingFlowProps {
   company: string;
@@ -20,11 +21,11 @@ interface OnboardingFlowProps {
  * OnboardingFlow Component
  *
  * Orchestrates the complete onboarding experience:
- * - Welcome → Questions → Loading → Plan Reveal
+ * - Welcome → Questions → Content → Loading → Plan Reveal
  * - Handles step transitions with AnimatePresence
  * - Manages state through Zustand store
  *
- * Animation sequence: Coach (0ms) → Question (400ms) → Options (600ms)
+ * Animation sequence: Coach (0ms) → Content/Question (400ms) → Options (600ms)
  */
 export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
   const {
@@ -40,6 +41,7 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showQuestion, setShowQuestion] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   // Initialize company and role on mount
   useEffect(() => {
@@ -53,6 +55,7 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
     setSelectedOption(null);
     setShowQuestion(false);
     setShowOptions(false);
+    setShowContent(false);
   }, [currentStepId]);
 
   // Handle selection for multiple choice (auto-advance after delay)
@@ -69,9 +72,36 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
     submitAnswer(selectedIds);
   };
 
+  // Handle content continue
+  const handleContentContinue = () => {
+    if (currentStep?.nextStep) {
+      goToStep(currentStep.nextStep);
+    }
+  };
+
   if (!currentStep) {
     return null;
   }
+
+  // Render the appropriate content component
+  const renderContent = () => {
+    if (!currentStep.content) return null;
+
+    switch (currentStep.content.type) {
+      case 'video':
+        return <VideoContent content={currentStep.content} />;
+      case 'code':
+        return <CodeBlock content={currentStep.content} />;
+      case 'diagram':
+        return <DiagramContent content={currentStep.content} />;
+      case 'long-text':
+        return <LongTextContent content={currentStep.content} />;
+      case 'tip-card':
+        return <TipCard content={currentStep.content} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div
@@ -198,6 +228,58 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                       maxSelect={currentStep.maxSelect}
                     />
                   )}
+                </motion.div>
+              </div>
+            </div>
+          )}
+
+          {/* Content screens (video, code, diagrams, etc.) */}
+          {currentStep.type === 'content' && (
+            <div
+              className="min-h-screen flex flex-col items-center"
+              style={{ padding: '80px 24px 24px' }}
+            >
+              <div className="w-full max-w-2xl">
+                {/* Coach message - appears first */}
+                <div style={{ marginBottom: 32 }}>
+                  <Coach
+                    message={currentStep.coachMessage}
+                    onAnimationComplete={() => setShowContent(true)}
+                  />
+                </div>
+
+                {/* Content - fades in after coach */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{
+                    opacity: showContent ? 1 : 0,
+                    y: showContent ? 0 : 12,
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                  {renderContent()}
+
+                  {/* Continue button */}
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: showContent ? 1 : 0 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
+                    onClick={handleContentContinue}
+                    className="w-full transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    style={{
+                      marginTop: 32,
+                      padding: '16px 24px',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--primary)',
+                      color: 'white',
+                      fontSize: 16,
+                      fontWeight: 600,
+                      boxShadow: 'var(--shadow-md)',
+                      pointerEvents: showContent ? 'auto' : 'none',
+                    }}
+                  >
+                    Continue
+                  </motion.button>
                 </motion.div>
               </div>
             </div>

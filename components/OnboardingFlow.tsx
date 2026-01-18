@@ -142,46 +142,47 @@ export function OnboardingFlow({ company, role }: OnboardingFlowProps) {
                   />
                 </div>
 
-                {/* Question heading - always visible */}
-                {currentStep.question && (
-                  <h2
+                {/* Question heading - always visible, no animation */}
+                <h2
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 600,
+                    letterSpacing: '-0.02em',
+                    color: 'var(--foreground)',
+                    marginBottom: 24,
+                    textAlign: 'center',
+                    visibility: currentStep.question ? 'visible' : 'hidden',
+                  }}
+                >
+                  {currentStep.question || '\u00A0'}
+                </h2>
+
+                {/* Options - only render after typing completes */}
+                {isTypingComplete && (
+                  <div
                     style={{
-                      fontSize: 24,
-                      fontWeight: 600,
-                      letterSpacing: '-0.02em',
-                      color: 'var(--foreground)',
-                      marginBottom: 24,
-                      textAlign: 'center',
+                      opacity: 1,
+                      transition: 'opacity 0.3s ease-out',
                     }}
                   >
-                    {currentStep.question}
-                  </h2>
+                    {currentStep.questionType === 'multiple-choice' && currentStep.options && (
+                      <MultipleChoice
+                        options={currentStep.options}
+                        onSelect={handleMultipleChoiceSelect}
+                        selectedId={selectedOption || undefined}
+                      />
+                    )}
+
+                    {currentStep.questionType === 'multi-select' && currentStep.options && (
+                      <MultiSelect
+                        options={currentStep.options}
+                        onSubmit={handleMultiSelectSubmit}
+                        minSelect={currentStep.minSelect}
+                        maxSelect={currentStep.maxSelect}
+                      />
+                    )}
+                  </div>
                 )}
-
-                {/* Options - fade in after typing */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isTypingComplete ? 1 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ pointerEvents: isTypingComplete ? 'auto' : 'none' }}
-                >
-                  {currentStep.questionType === 'multiple-choice' && currentStep.options && (
-                    <MultipleChoice
-                      options={currentStep.options}
-                      onSelect={handleMultipleChoiceSelect}
-                      selectedId={selectedOption || undefined}
-                    />
-                  )}
-
-                  {currentStep.questionType === 'multi-select' && currentStep.options && (
-                    <MultiSelect
-                      options={currentStep.options}
-                      onSubmit={handleMultiSelectSubmit}
-                      minSelect={currentStep.minSelect}
-                      maxSelect={currentStep.maxSelect}
-                    />
-                  )}
-                </motion.div>
               </div>
             </div>
           )}

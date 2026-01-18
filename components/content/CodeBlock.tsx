@@ -131,8 +131,8 @@ export function CodeBlock({ content }: CodeBlockProps) {
           background: 'var(--stone-900)',
           padding: '16px 12px',
           borderRadius: '0 0 var(--radius-lg) var(--radius-lg)',
-          overflow: 'auto',
-          maxHeight: 320,
+          overflowY: 'auto',
+          maxHeight: 300,
           boxShadow: 'var(--shadow-md)',
         }}
       >
@@ -140,9 +140,11 @@ export function CodeBlock({ content }: CodeBlockProps) {
           style={{
             margin: 0,
             fontFamily: 'var(--font-mono)',
-            fontSize: 14,
-            lineHeight: 1.6,
+            fontSize: 13,
+            lineHeight: 1.5,
             color: 'var(--stone-100)',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
           }}
         >
           <code>

@@ -147,31 +147,24 @@ export const flowSteps: FlowStep[] = [
   {
     id: 'code-example',
     type: 'content',
-    coachMessage: "Let's look at a classic interview problem. Study this two-pointer approach - it's a pattern you'll use repeatedly.",
+    coachMessage: "Here's a classic pattern - two pointers on a sorted array. O(n) time, O(1) space.",
     content: {
       type: 'code',
       language: 'python',
-      title: 'Two Sum II - Sorted Array',
-      code: `def two_sum(numbers: list[int], target: int) -> list[int]:
-    """
-    Find two numbers that add up to target.
-    Array is sorted - use two pointers!
-    Time: O(n), Space: O(1)
-    """
-    left, right = 0, len(numbers) - 1
+      title: 'Two Sum (Sorted Array)',
+      code: `def two_sum(nums, target):
+    left, right = 0, len(nums) - 1
 
     while left < right:
-        current_sum = numbers[left] + numbers[right]
-
-        if current_sum == target:
-            return [left + 1, right + 1]  # 1-indexed
-        elif current_sum < target:
-            left += 1   # Need larger sum
+        total = nums[left] + nums[right]
+        if total == target:
+            return [left, right]
+        elif total < target:
+            left += 1
         else:
-            right -= 1  # Need smaller sum
-
-    return []  # No solution found`,
-      highlightLines: [7, 8, 12, 14],
+            right -= 1
+    return []`,
+      highlightLines: [2, 5, 6],
     },
     nextStep: 'interview-tips',
   },
